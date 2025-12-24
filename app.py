@@ -50,7 +50,7 @@ with st.sidebar:
 if api_key:
     # Configurar la API de Gemini
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+    model = genai.GenerativeModel('gemini-pro')
     
     # Input de imagen
     col1, col2 = st.columns([2, 1])
