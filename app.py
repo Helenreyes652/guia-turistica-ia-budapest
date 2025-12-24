@@ -2,7 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 from gtts import gTTS
 from PIL import Image
-import os
+from io import BytesIO
 
 # Configuración de la página
 st.set_page_config(
@@ -111,22 +111,16 @@ if api_key:
                         # Generar audio
                         with st.spinner("Generando audio en español..."):
                             tts = gTTS(descripcion, lang='es')
-                            audio_file = "guia_audio.mp3"
-                            tts.save(audio_file)
-                            
-                            # Reproducir audio
+                            audio_fp = BytesIO()
+                            tts.write_to_fp(audio_fp)
+                            audio_fp.seek(0)                            # Reproducir audio
                             st.markdown("### 🔊 Escucha la explicación")
-                            st.audio(audio_file)
-                            
+                            st.audio(audio_fp, format='audio/mp3')                            
                             st.info("""
                             💡 **Consejo:** Cuando llegues al siguiente punto de interés, 
                             vuelve a tomar una foto para obtener nueva información.
                             """)
                             
-                            # Limpiar archivo temporal
-                            if os.path.exists(audio_file):
-                                os.remove(audio_file)
-                    
                     except Exception as e:
                         st.error(f"❌ Error al procesar la imagen: {str(e)}")
                         st.info("Verifica que tu API Key sea válida y que tengas conexión a internet.")
